@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Proto Jr. COM</title>
+    <style>
+      body {
+        text-align: center;
+        background-color: black;
+        margin: 0;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      h1 {
+        color: #017;
+        font-family: sans-serif;
+      }
+      p {
+        color: #017;
+        font-family: sans-serif;
+      }
+      .warning {
+        color: red;
+        font-family: sans-serif;
+      }
+      input {
+        padding: 5px;
+        color: black;
+        font-size: 12pt;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        background-color: #eef5;
+        outline: none;
+        border-style: dashed;
+        border-width: 2px;
+        border-color: #017;
+        border-radius: 5px;
+        width: 97%;
+      }
+      button.move {
+        height: 50px;
+        width: 50px;
+      }
+    </style>
+    <script>
+
+      ip = "141.219.237.104";
+      
+      function getLive() {
+        document.body.style.backgroundImage = "url('http://" + ip + ":7000/live.mjpg')";
+      }
+
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState == 'visible') { getLive(); }
+      });
+
+      function connect() {
+        socket = new WebSocket("ws://" + ip + ":8000/connect");
+        socket.onmessage = function(event) {
+		      document.getElementById("RET").value = event.data;
+		    };
+
+        socket.onopen = function(event) {
+          document.getElementById("error console").style.display = 'none';
+        }
+
+		    socket.onclose = function(event) {
+		      if (event.wasClean) {
+		        document.getElementById("error console").style.display = '';
+		        document.getElementById("error console").innerHTML = "Server connection is now closed.  Come back later and it may be open."
+		      } else {
+		        connect();
+		      }
+		    };
+
+		    socket.onerror = function(error) {
+		      document.getElementById("error console").style.display = '';
+		      document.getElementById("error console").innerHTML = `There was a strange error in the server connection: ${error.message}`;
+		    };
+      }
+
+      connect();
+
+      function send(Data) {
+        socket.send(Data);
+      }
+
+      function l(dir) {
+        if (dir == 0) {
+          send("l.digitalWrite(0)");
+        } else {
+          send("l.servoWrite(" + (1500 + 1000*dir).toString() + ")");
+        }
+      }
+
+      function r(dir) {
+        if (dir == 0) {
+          send("r.digitalWrite(0)");
+        } else {
+          send("r.servoWrite(" + (1500 - 1000*dir).toString() + ")");
+        }
+      }
+
+      function tankDrive(Left, Right) {
+        l(Left);
+        r(Right);
+      }
+
+      w = false;
+      a = false;
+      s = false;
+      d = false;
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key == 'w') { w = true; q(); }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key == 'a') { a = true; q(); }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key == 's') { s = true; q(); }
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key == 'd') { d = true; q(); }
+      });
+      document.addEventListener('keyup', function(e) {
+        if (e.key == 'w') { w = false; q(); }
+      });
+      document.addEventListener('keyup', function(e) {
+        if (e.key == 'a') { a = false; q(); }
+      });
+      document.addEventListener('keyup', function(e) {
+        if (e.key == 's') { s = false; q(); }
+      });
+      document.addEventListener('keyup', function(e) {
+        if (e.key == 'd') { d = false; q(); }
+      });
+
+      function q() { // Transpose UI Input onto TankDrive Function
+        if (w && !a && !s && !d) { // w
+          tankDrive(1,1);
+        } else if (!w && a && !s && !d) { // a
+          tankDrive(-1,1);
+        } else if (!w && !a && !s && d) { // d
+          tankDrive(1,-1);
+        } else if (!w && !a && s && !d) { // s
+          tankDrive(-1,-1);
+        } else if (w && a && !s && !d) { // w-a
+          tankDrive(0.3, 1);
+        } else if (w && !a && !s && d) { // w-d
+          tankDrive(1, 0.3);
+        } else if (!w && a && s && !d) { // s-a
+          tankDrive(-1, -0.3);
+        } else if (!w && !a && s && d) { // s-d
+          tankDrive(-0.3, -1);
+        } else {
+          tankDrive(0,0);
+        }
+      }
+      
+    </script>
+  </head>
+  <body onload="getLive()">
+    <p id="error console" class="warning" style="display: none"></p>
+    <br><br>
+    <button class="move" ontouchstart="w = true; q();" ontouchend="w = false; q();" onmousedown="w = true; q();" onmouseup="w = false; q();">W</button><br>
+    <button class="move" ontouchstart="a = true; q();" ontouchend="a = false; q();" onmousedown="a = true; q();" onmouseup="a = false; q();">A</button>
+    <button class="move" ontouchstart="s = true; q();" ontouchend="s = false; q();" onmousedown="s = true; q();" onmouseup="s = false; q();">S</button>
+    <button class="move" ontouchstart="d = true; q();" ontouchend="d = false; q();" onmousedown="d = true; q();" onmouseup="d = false; q();">D</button><br>
+    <br><br>
+    <details>
+      <summary>Code</summary>
+      <input type="text" id="DOC" ondblclick="send(this.value)"/>
+      <input type="button" value="Send" onclick="send(document.getElementById('DOC').value)"/>
+      <input type="text" id="RET"/>
+    </details>
+  </body>
+</html>
