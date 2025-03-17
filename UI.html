@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -158,6 +157,10 @@
           tankDrive(0,0);
         }
       }
+
+      function z(Angle) {
+        send("z.servoWrite(" + (1500 - 1000*dir/90).toString() + ")");
+      }
       
     </script>
   </head>
@@ -168,7 +171,9 @@
     <button class="move" ontouchstart="a = true; q();" ontouchend="a = false; q();" onmousedown="a = true; q();" onmouseup="a = false; q();">A</button>
     <button class="move" ontouchstart="s = true; q();" ontouchend="s = false; q();" onmousedown="s = true; q();" onmouseup="s = false; q();">S</button>
     <button class="move" ontouchstart="d = true; q();" ontouchend="d = false; q();" onmousedown="d = true; q();" onmouseup="d = false; q();">D</button><br>
-    <br><br>
+    <br>
+    <input type="range" style="width:300px" min="-90" max="90" value="0" oninput="z(this.value)"/><br>
+    <br>
     <details>
       <summary>Code</summary>
       <input type="text" id="DOC" ondblclick="send(this.value)"/>
