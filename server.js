@@ -7,6 +7,7 @@ const clients = new Set();
 const Gpio = require('pigpio').Gpio;
 const l = new Gpio(14, {mode: Gpio.OUTPUT});
 const r = new Gpio(15, {mode: Gpio.OUTPUT});
+const z = new Gpio(18, {mode: Gpio.OUTPUT});
 
 http.createServer((req, res) => {
   if (req.url == "/connect") {
