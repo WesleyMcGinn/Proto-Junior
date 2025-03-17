@@ -12,10 +12,10 @@ http.createServer((req, res) => {
   if (req.url == "/connect") {
     res.writeHead(101, {'Upgrade':'websocket', 'Connection':'Upgrade'});
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), function(ws) {
-		  clients.add(ws);
-		  ws.on('message', function(message) {
-		    var input = "" + message;
-		    try {
+      clients.add(ws);
+      ws.on('message', function(message) {
+        var input = "" + message;
+	try {
           var output = eval(input);
           if (output) {
             ws.send(output.toString());
