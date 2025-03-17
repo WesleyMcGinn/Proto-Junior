@@ -9,7 +9,7 @@ from picamera2.outputs import FileOutput
 
 streamWidth = 880
 streamHeight = round(streamWidth * 9/16)
-HTML = "<html><head><title>RaspberryTips Pi Cam Stream</title><style>body{margin:0;background-color:black}</style></head><body><img src='live.mjpg' width='100%'/></body></html>"
+HTML = "<html><head><title>Proto Jr. Livestream</title><style>body{margin:0;background-color:black}</style></head><body><img src='live.mjpg' width='100%'/></body></html>"
 
 class StreamingOutput(io.BufferedIOBase):
     def __init__(self):
