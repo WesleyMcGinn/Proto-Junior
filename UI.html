@@ -146,13 +146,13 @@
         } else if (!w && !a && s && !d) { // s
           tankDrive(-1,-1);
         } else if (w && a && !s && !d) { // w-a
-          tankDrive(0.15, 1);
+          tankDrive(0.1, 1);
         } else if (w && !a && !s && d) { // w-d
-          tankDrive(1, 0.15);
+          tankDrive(1, 0.1);
         } else if (!w && a && s && !d) { // s-a
-          tankDrive(-1, -0.15);
+          tankDrive(-1, -0.1);
         } else if (!w && !a && s && d) { // s-d
-          tankDrive(-0.15, -1);
+          tankDrive(-0.1, -1);
         } else {
           tankDrive(0,0);
         }
