@@ -31,7 +31,7 @@ http.createServer((req, res) => {
   } else if (req.url == "/reboot") {
     shell.exec("sudo reboot");
   } else {
-    fs.readFile("./UI.html", function (err, data) {
+    fs.readFile("/home/35E7/Proto-Junior/UI.html", function (err, data) {
       if (err) {
         console.log("404: HTML file does not exist!");
         res.writeHead(404, {'Content-Type': 'text/html'});
