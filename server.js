@@ -9,6 +9,7 @@ const l = new Gpio(14, {mode: Gpio.OUTPUT});
 const r = new Gpio(15, {mode: Gpio.OUTPUT});
 const z = new Gpio(18, {mode: Gpio.OUTPUT});
 const led = new Gpio(26, {mode: Gpio.OUTPUT});
+const lights = new Gpio(13, {mode: Gpio.OUTPUT});
 
 // Display IP Address By Blinking LED:
 setTimeout(function() {
@@ -38,7 +39,7 @@ setTimeout(function() {
       thru = 0;
     }
   }, tpb);
-}, 5000);
+}, 12000);
 
 http.createServer((req, res) => {
   if (req.url == "/connect") {
