@@ -14,10 +14,12 @@ const led = new Gpio(26, {mode: Gpio.OUTPUT});
 setTimeout(function() {
   ip = shell.exec("hostname -I");
   thru = 0; // How far through the blink sequence are we
-  tpb = 170; // Time per blink (ms)
+  tpb = 140; // Time per blink (ms)
   seq = []; // List for blink sequence storage
   for (i=0; i<ip.length+2; i++) { // Form blink sequence
     if (i >= ip.length || ip[i] == '.') {
+      seq.push(0);
+      seq.push(0);
       seq.push(0);
       seq.push(0);
     } else {
@@ -25,6 +27,8 @@ setTimeout(function() {
         seq.push(1);
         seq.push(0);
       }
+      seq.push(0);
+      seq.push(0);
     }
   }
   setInterval(function() {
