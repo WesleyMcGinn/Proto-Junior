@@ -8,7 +8,7 @@ const Gpio = require('pigpio').Gpio;
 const l = new Gpio(14, {mode: Gpio.OUTPUT});
 const r = new Gpio(15, {mode: Gpio.OUTPUT});
 const z = new Gpio(18, {mode: Gpio.OUTPUT});
-const led = new Gpio(2, {mode: Gpio.OUTPUT});
+const led = new Gpio(26, {mode: Gpio.OUTPUT});
 
 // Display IP Address By Blinking LED:
 setTimeout(function() {
