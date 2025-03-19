@@ -22,6 +22,8 @@ class StreamingOutput(io.BufferedIOBase):
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
+        if self.path == '/stop':
+            raise Exception("STOP")
         if self.path == '/live.mjpg':
             self.send_response(200)
             self.send_header('Age', 0)
