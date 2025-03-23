@@ -12,9 +12,6 @@ streamWidth = 800
 streamHeight = round(streamWidth * 9/16)
 HTML = "<html><head><title>Proto Jr. Livestream</title><style>body{margin:0;background-color:black}</style></head><body><img src='live.mjpg' width='100%'/></body></html>"
 
-fps = 10
-theTime = time.time()
-
 class StreamingOutput(io.BufferedIOBase):
     def __init__(self):
         self.frame = None
@@ -29,7 +26,15 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
         if self.path == '/stop':
             self.server.shutdown()
             return
-        if self.path == '/live.mjpg':
+        if self.path == '/snap.jpg':
+            with output.condition:
+                if output.frame is not None:
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'image/jpeg')
+                    self.send_header('Content-Length', len(output.frame))
+                    self.end_headers()
+                    self.wfile.write(output.frame)
+        elif self.path == '/live.mjpg':
             self.send_response(200)
             self.send_header('Age', 0)
             self.send_header('Cache-Control', 'no-cache, private')
@@ -37,11 +42,12 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
             self.end_headers()
             try:
+                theTime = time.time()
                 while True:
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
-                    if (time.time() - theTime) >= (1 / fps):
+                    if time.time() - theTime >= 0.1:
                         self.wfile.write(b'--FRAME\r\n')
                         self.send_header('Content-Type', 'image/jpeg')
                         self.send_header('Content-Length', len(frame))
