@@ -24,7 +24,7 @@ class StreamingOutput(io.BufferedIOBase):
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/stop':
-            cam.stop_recording()
+            exit()
         if self.path == '/live.mjpg':
             self.send_response(200)
             self.send_header('Age', 0)
@@ -43,7 +43,6 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(frame)
                     self.wfile.write(b'\r\n')
-                    time.sleeep(0.1)
             except Exception as e:
                 print('Stopped: %s: %s', self.client_address, str(e))
         else:
