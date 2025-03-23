@@ -1,3 +1,4 @@
+import time
 import io
 import logging
 import socketserver
@@ -7,7 +8,7 @@ from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
 
-streamWidth = 880
+streamWidth = 800
 streamHeight = round(streamWidth * 9/16)
 HTML = "<html><head><title>Proto Jr. Livestream</title><style>body{margin:0;background-color:black}</style></head><body><img src='live.mjpg' width='100%'/></body></html>"
 
@@ -23,7 +24,7 @@ class StreamingOutput(io.BufferedIOBase):
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/stop':
-            raise Exception("STOP")
+            cam.stop_recording()
         if self.path == '/live.mjpg':
             self.send_response(200)
             self.send_header('Age', 0)
@@ -42,6 +43,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(frame)
                     self.wfile.write(b'\r\n')
+                    time.sleeep(0.1)
             except Exception as e:
                 print('Stopped: %s: %s', self.client_address, str(e))
         else:
