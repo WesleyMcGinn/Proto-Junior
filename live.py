@@ -25,7 +25,6 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/stop':
             self.server.shutdown()
-            cam.stop_recording()
             return
         if self.path == '/live.mjpg':
             self.send_response(200)
