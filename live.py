@@ -12,6 +12,9 @@ streamWidth = 800
 streamHeight = round(streamWidth * 9/16)
 HTML = "<html><head><title>Proto Jr. Livestream</title><style>body{margin:0;background-color:black}</style></head><body><img src='live.mjpg' width='100%'/></body></html>"
 
+fps = 10
+theTime = time.time()
+
 class StreamingOutput(io.BufferedIOBase):
     def __init__(self):
         self.frame = None
@@ -38,12 +41,14 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
-                    self.wfile.write(b'--FRAME\r\n')
-                    self.send_header('Content-Type', 'image/jpeg')
-                    self.send_header('Content-Length', len(frame))
-                    self.end_headers()
-                    self.wfile.write(frame)
-                    self.wfile.write(b'\r\n')
+                    if (time.time() - theTime) >= (1 / fps):
+                        self.wfile.write(b'--FRAME\r\n')
+                        self.send_header('Content-Type', 'image/jpeg')
+                        self.send_header('Content-Length', len(frame))
+                        self.end_headers()
+                        self.wfile.write(frame)
+                        self.wfile.write(b'\r\n')
+                        theTime = time.time()
             except Exception as e:
                 print('Stopped: %s: %s', self.client_address, str(e))
         else:
